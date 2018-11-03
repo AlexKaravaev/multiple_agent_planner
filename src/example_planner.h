@@ -82,9 +82,9 @@ public:
   void convertToCoordinate(int index, float& x, float& y);
   bool isCellInsideMap(float x, float y);
   void mapToWorld(double mx, double my, double& wx, double& wy);
-  vector<int> Example_Planner(int startCell, int goalCell);
-  vector<int> findPath(int startCell, int goalCell, float g_score[]);
-  vector<int> constructPath(int startCell, int goalCell, float g_score[]);
+  std::vector<int> Example_Planner(int startCell, int goalCell);
+  std::vector<int> findPath(int startCell, int goalCell, float g_score[]);
+  std::vector<int> constructPath(int startCell, int goalCell, float g_score[]);
   float calculateHCost(int cellID, int goalCell){
   int x1=getCellRowID(goalCell);
   int y1=getCellColID(goalCell);
@@ -94,7 +94,7 @@ public:
 	//return min(abs(x1-x2),abs(y1-y2))*sqrt(2) + max(abs(x1-x2),abs(y1-y2))-min(abs(x1-x2),abs(y1-y2));
   }
   void addNeighborCellToOpenList(multiset<cells> & OPL, int neighborCell, int goalCell, float g_score[]);
-  vector <int> findFreeNeighborCell (int CellID);
+  std::vector <int> findFreeNeighborCell (int CellID);
   bool isStartAndGoalCellsValid(int startCell,int goalCell); 
   float getMoveCost(int CellID1, int CellID2);
   float getMoveCost(int i1, int j1, int i2, int j2);
