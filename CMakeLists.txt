@@ -9,7 +9,7 @@ project(detached_planner)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   nav_core
-  ros_cpp
+  roscpp
   rospy
   std_msgs
 )
@@ -125,7 +125,7 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/detached_planner.cpp
 # )
-
+add_library(detached_planner_lib src/example_planner.cpp)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure

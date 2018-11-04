@@ -22,6 +22,14 @@
 PLUGINLIB_EXPORT_CLASS(example_planner::Example_Planner, nav_core::BaseGlobalPlanner)
 
 
+int value;
+int mapSize;
+bool* OGM;
+static const float INFINIT_COST = INT_MAX;
+float infinity = std::numeric_limits<float>::infinity();
+float tBreak;
+inline std::vector<int> findFreeNeighbourCell(int cellID);
+
 namespace example_planner{
 
 // Constructors
@@ -36,8 +44,8 @@ Example_Planner::Example_Planner(const std::string& name,costmap_2d::Costmap2DRO
 	initialize(name, costmap_ros);
 }
 
-void Example_Planner::initialize(const std::string& name, costmap_2d::Costmap2DROS* costmap_ros){
-	if (!initizalized_)
+void Example_Planner::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros){
+	if (!initialized_)
 	{
 		costmap_ros_ = costmap_ros;
 		costmap_ = costmap_ros_ -> getCostmap();
@@ -48,7 +56,7 @@ void Example_Planner::initialize(const std::string& name, costmap_2d::Costmap2DR
 		
 		origin = std::make_pair(costmap_->getOriginX(), costmap_->getOriginY());
 
-		// Width and height
+		// Width and size.second
 		size = std::make_pair(costmap_->getSizeInCellsX(), costmap_->getSizeInCellsY());
 
 		resolution = costmap_->getResolution();
@@ -58,10 +66,10 @@ void Example_Planner::initialize(const std::string& name, costmap_2d::Costmap2DR
 		
 		//Creating bool map
 		OGM = new bool [mapSize];
-		for (unsigned auto iy = 0; iy < size.second; iy++){
-			for(unsigned auto ix = 0; ix < size.first; ix++){
+		for (unsigned int iy = 0; iy < size.second; iy++){
+			for(unsigned int ix = 0; ix < size.first; ix++){
 				cost = static_cast<int>(costmap_->getCost(ix, iy));
-				if (cost == 0):
+				if (cost == 0)
 					OGM[iy*size.first + ix] = true;
 				else
 					OGM[iy*size.first + ix] = false;
@@ -83,7 +91,7 @@ bool Example_Planner::makePlan(const geometry_msgs::PoseStamped& start, const ge
 	ROS_DEBUG("Start: (%2f,%2f) and Goal: (%2f, %2f)", start.pose.position.x, start.pose.position.y, goal.pose.position.x, goal.pose.position.y);
 	plan.clear();
 	
-	if (goal.header.frame_id != costmap_ros_ -> getGLobalFrameID()){
+	if (goal.header.frame_id != costmap_ros_ -> getGlobalFrameID()){
 		ROS_ERROR("Planner is configured to accept goal in %s frame, but goal was sent in %s frame", costmap_ros_->getGlobalFrameID().c_str(), goal.header.frame_id.c_str());
 		return false;
 	}
@@ -96,7 +104,7 @@ bool Example_Planner::makePlan(const geometry_msgs::PoseStamped& start, const ge
 	
 	std::pair <float, float> coord_start = std::make_pair(start.pose.position.x, start.pose.position.y);
 	
-	std::pair <float, float> coord_goal = std::make_pair(goal.pose.positoon.x, goal.pose.position.y);
+	std::pair <float, float> coord_goal = std::make_pair(goal.pose.position.x, goal.pose.position.y);
 	
 	getCoordinate(coord_start);
 	getCoordinate(coord_goal);
@@ -105,8 +113,8 @@ bool Example_Planner::makePlan(const geometry_msgs::PoseStamped& start, const ge
 	int goalCell;
 	
 	if (isCellInsideMap(coord_start.first, coord_start.second) && isCellInsideMap(coord_goal.first, coord_goal.second)){
-		start_cell = convertToCellIndex(coord_start);
-		goalcell = convertToCellIndex(coord_goal);
+		startCell = convertToCellIndex(coord_start);
+		goalCell = convertToCellIndex(coord_goal);
 	}
 	else{
 		ROS_WARN("Start or goal cell is out of the map");
@@ -157,10 +165,10 @@ bool Example_Planner::makePlan(const geometry_msgs::PoseStamped& start, const ge
 			
 			for(; it != plan.end(); ++it){
 				path_length += hypot( (*it).pose.position.x - last_pose.pose.position.x,
-							(*it).pose.position.y - last_pose.pose.position.y)
+							(*it).pose.position.y - last_pose.pose.position.y);
 				last_pose = *it;
 			}
-			std::cout << "Global path len: " << path_length << endl;
+			std::cout << "Global path len: " << path_length << std::endl;
 			
 			return true;
 		}
@@ -176,12 +184,12 @@ bool Example_Planner::makePlan(const geometry_msgs::PoseStamped& start, const ge
 	}
 }
 
-void Example_Planner::getCoordinate(std::pair& coord){
+void Example_Planner::getCoordinate(std::pair<float, float>& coord){
 	coord.first = coord.first - origin.first;
 	coord.second = coord.second - origin.second;
 }
 
-int Example_Planner::convertToCellIndex(std::pair<float> coord){
+int Example_Planner::convertToCellIndex(std::pair<float, float> coord){
 	int cellIndx;
 	
 	cellIndx = getCellIndex(coord.first/resolution, coord.second/resolution);
@@ -193,20 +201,20 @@ void Example_Planner::convertToCoordinate(int index, float& x, float& y){
 	x = getCellColID(index) * resolution;
 	y = getCellRowID(index) * resolution;
 
-	x = x + originX;
-	y = y + originY;
+	x = x + origin.first;
+	y = y + origin.second;
 }
 
 bool Example_Planner::isCellInsideMap(const float& x, const float& y){
 	bool valid = true;
 	
-	if (x > (size.first * resolution) || y > (height * resolution))
+	if (x > (size.first * resolution) || y > (size.second * resolution))
 		valid = false;
 	return valid;
 }
 
 void Example_Planner::mapToWorld(const double& mx, const double& my, double& wx, double& wy){
-	costmap2d::Costmap2D* costmap = costmap_ros_->getCostmap();
+	costmap_2d::Costmap2D* costmap = costmap_ros_->getCostmap();
 
 	wx = costmap->getOriginX() + mx * resolution;
 	wy = costmap->getOriginY() + my * resolution;
@@ -217,7 +225,7 @@ std::vector<int> Example_Planner::AStarPlanner(const int& startCell, const int& 
 	
 	float g_score[mapSize];
 	
-	for (auto i = 0; i < mapSize; i++){
+	for (auto i = 0; i < mapSize; i++)
 		g_score[i] = infinity;
 		
 	timespec time1, time2;
@@ -228,7 +236,7 @@ std::vector<int> Example_Planner::AStarPlanner(const int& startCell, const int& 
 
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
 	
-	std::cout << "Time for pathfinding algo: " << (diff(time1,time2).tv_sec)*1e3 + (diff(time1,time2).tv_nsec)*1e-6 << " microseconds" << std::endl;
+	//std::cout << "Time for pathfinding algo: " << (std::diff(time1,time2).tv_sec)*1e3 + (std::diff(time1,time2).tv_nsec)*1e-6 << " microseconds" << std::endl;
 
 	return bestPath;
 }
@@ -239,12 +247,12 @@ std::vector<int> Example_Planner::findPath(int startCell, int goalCell, float g_
 	std::vector<int> emptyPath;
 	cells CP;
 
-	multiset<cells> OPL;
+	std::multiset<cells> OPL;
 	int currentCell;
 		
 	g_score[startCell] = 0;
 	CP.currentCell = startCell;
-	CP.fcost = g_score[startCell] + H(startCell, goalCell);
+	CP.fCost = g_score[startCell] + H(startCell, goalCell);
 	
 	OPL.insert(CP);
 	currentCell = startCell;
@@ -307,7 +315,7 @@ std::vector<int> Example_Planner::constructPath( const int& startCell, const int
 	
 	return bestPath;
 }
-		
+/*
 float Example_Planner::H(const int& cellID, const int& goalCell){
 	std::pair<int,int> coord_1 = std::make_pair(getCellRowID(goalCell), getCellColID(goalCell));
 	std::pair<int,int> coord_2 = std::make_pair(getCellRowID(cellID), getCellColID(cellID));
@@ -318,10 +326,10 @@ float Example_Planner::H(const int& cellID, const int& goalCell){
 	else
 		return abs(coord_1.first - coord_2.first) + abs(coord_1.second - coord_2.second);
 }
-
-void Example_Planner::addNeighbourCellToOpenList(multiset<cells>& OPL, int neighbourCell, int goalCell, int g_score[]){
+*/
+void Example_Planner::addNeighbourCellToOpenList(std::multiset<cells>& OPL, int neighbourCell, int goalCell, float g_score[]){
 	cells CP;
-	CP.current_cell = neighbourCell;
+	CP.currentCell = neighbourCell;
 	CP.fCost = g_score[neighbourCell] + H(neighbourCell, goalCell);
 	OPL.insert(CP);
 }
@@ -335,7 +343,7 @@ std::vector<int> Example_Planner::findFreeNeighbourCell(int CellID){
 	
 	for (auto i = -1; i <= 1; ++i){
 		for (auto j = -1; j <= 1; ++j){
-			 if ((rowID+i>=0)&&(rowID+i<height)&&(colID+j>=0)&&(colID+j<width)&& (!(i==0 && j==0))){
+			 if ((rowID+i>=0)&&(rowID+i<size.second)&&(colID+j>=0)&&(colID+j<size.first)&& (!(i==0 && j==0))){
 				neighbourIndex = getCellIndex(rowID+i,colID+j);
         			if(isFree(neighbourIndex) )
 	    				freeNeighbourCells.push_back(neighbourIndex);
@@ -345,4 +353,60 @@ std::vector<int> Example_Planner::findFreeNeighbourCell(int CellID){
 
 	return freeNeighbourCells;
 }
+
+bool Example_Planner::isStartAndGoalCellsValid(const int& startCell, const int& goalCell){
+    bool isvalid = true;
+    bool isFreeStart = isFree(startCell);
+    bool isFreeGoal = isFree(goalCell);
+
+    if (startCell == goalCell)
+        isvalid = false;
+
+    else{
+        if (!isFreeStart || !isFreeGoal){
+            std::cout << "start of goal cell is an obstacle" << std::endl;
+            isvalid = false;
+        }
+        else{
+            int start_area = findFreeNeighbourCell(startCell).size();
+            int goal_area = findFreeNeighbourCell(goalCell).size();
+            if (start_area == 0 || goal_area == 0)
+                isvalid = false;
+        }
+    }
+    return isvalid;
+}
+
+float Example_Planner::getMoveCost(const int& i1, const int& j1, const int& i2, const int& j2){
+    
+    float x,y;
+    x = i2 - i1;
+    y = j2 - j1;
+    return hypot(x,y);
+}
+
+float Example_Planner::getMoveCost(const int& CellID1, const int& CellID2){
+    int i1,i2,j1,j2;
+
+    i1 = getCellRowID(CellID1);
+    j1 = getCellColID(CellID1);
+    i2 = getCellRowID(CellID2);
+    j2 = getCellColID(CellID2);
+
+    return getMoveCost(i1,j1,i2,j2);
+}
+
+bool Example_Planner::isFree(const int& i, const int& j){
+    int CellID = getCellIndex(i, j);
+    return OGM[CellID];
+}
+
+bool Example_Planner::isFree(const int& CellID){
+    return OGM[CellID];
+}
+
+};
+
+bool operator<(cells const &c1, cells const &c2) { return c1.fCost < c2.fCost; }
+
 

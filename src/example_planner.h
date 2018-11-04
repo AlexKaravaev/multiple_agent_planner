@@ -63,11 +63,11 @@ namespace example_planner {
 class Example_Planner : public nav_core::BaseGlobalPlanner {
 public:
   
-  Example_Planner (ros::NodeHandle &); //this constructor is may be not needed
+  Example_Planner (const ros::NodeHandle &); //this constructor is may be not needed
   Example_Planner ();
-  Example_Planner(std::string name, costmap_2d::Costmap2DROS* costmap_ros);
+  Example_Planner(const std::string& name, costmap_2d::Costmap2DROS* costmap_ros);
   
-  ros::NodeHandle ROSNodeHandle;
+  ros::NodeHandle NodeHandler;
   
   /** overriden classes from interface nav_core::BaseGlobalPlanner **/
   void initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros);
@@ -77,15 +77,15 @@ public:
 	       );
  
 
-  void getCorrdinate (float& x, float& y);
-  int convertToCellIndex (float x, float y);
+  void getCoordinate (std::pair<float, float>& coord);
+  int convertToCellIndex (std::pair<float, float> coord);
   void convertToCoordinate(int index, float& x, float& y);
-  bool isCellInsideMap(float x, float y);
-  void mapToWorld(double mx, double my, double& wx, double& wy);
-  std::vector<int> Example_Planner(int startCell, int goalCell);
+  bool isCellInsideMap(const float& x,const float& y);
+  void mapToWorld(const double& mx,const double& my,double& wx, double& wy);
+  std::vector<int> AStarPlanner(const int& startCell,const int& goalCell);
   std::vector<int> findPath(int startCell, int goalCell, float g_score[]);
-  std::vector<int> constructPath(int startCell, int goalCell, float g_score[]);
-  float calculateHCost(int cellID, int goalCell){
+  std::vector<int> constructPath(const int& startCell,const int& goalCell, float g_score[]);
+  float H(const int& cellID,const int& goalCell){
   int x1=getCellRowID(goalCell);
   int y1=getCellColID(goalCell);
   int x2=getCellRowID(cellID);
@@ -93,25 +93,25 @@ public:
     return abs(x1-x2)+abs(y1-y2);
 	//return min(abs(x1-x2),abs(y1-y2))*sqrt(2) + max(abs(x1-x2),abs(y1-y2))-min(abs(x1-x2),abs(y1-y2));
   }
-  void addNeighborCellToOpenList(multiset<cells> & OPL, int neighborCell, int goalCell, float g_score[]);
-  std::vector <int> findFreeNeighborCell (int CellID);
-  bool isStartAndGoalCellsValid(int startCell,int goalCell); 
-  float getMoveCost(int CellID1, int CellID2);
-  float getMoveCost(int i1, int j1, int i2, int j2);
-  bool isFree(int CellID); //returns true if the cell is Free
-  bool isFree(int i, int j); 
+  void addNeighbourCellToOpenList(std::multiset<cells> & OPL, int neighborCell, int goalCell, float g_score[]);
+  std::vector <int> findFreeNeighbourCell (int CellID);
+  bool isStartAndGoalCellsValid(const int& startCell,const int& goalCell); 
+  float getMoveCost(const int& CellID1,const int& CellID2);
+  float getMoveCost(const int& i1,const int& j1,const int& i2,const int& j2);
+  bool isFree(const int& CellID); //returns true if the cell is Free
+  bool isFree(const int& i,const int& j); 
 
   int getCellIndex(int i,int j) //get the index of the cell to be used in Path
   {
-   return (i*width)+j;  
+   return (i*size.first)+j;  
   }
   int getCellRowID(int index)//get the row ID from cell index
   {
-     return index/width;
+    return index/size.first;
   }
   int getCellColID(int index)//get colunm ID from cell index
   {
-    return index%width;
+    return index%size.first;
   }
 
   std::pair <float, float> origin;

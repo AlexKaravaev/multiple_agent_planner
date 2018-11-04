@@ -1,0 +1,5 @@
+<library path="lib/libdetached_planner_lib">
+    <class name="example_planner/Example_Planner" type="example_planner::Example_Planner" base_class_type="nav_core::BaseGlobalPlanner">
+    <description>Example global detached planner</description>
+  </class>
+</library>
