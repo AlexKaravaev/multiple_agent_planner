@@ -36,9 +36,17 @@ floorplan
   pose [  5.0  5.0 0.0 0.0 ]
 )
 
-# throw in a robot
+# throw in a 1 robot
 diff_drive_robot
 (
   pose [ 2.0 2.0 0.0 0.0 ]
   name "robot"
 )
+
+# throw in a 2 robot
+diff_drive_robot
+(
+  pose [ 5.0 5.0 0.0 0.0 ]
+  name "robot_1"
+)
+

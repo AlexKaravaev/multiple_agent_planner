@@ -1,0 +1,11 @@
+# base global planner params
+base_global_planner: detached_planner/GlobalPlanner
+planner_frequency: 1.0
+planner_patience: 5.0
+
+# base local planner params
+base_local_planner: teb_local_planner/TebLocalPlannerROS
+controller_frequency: 5.0
+controller_patience: 15.0
+
+
