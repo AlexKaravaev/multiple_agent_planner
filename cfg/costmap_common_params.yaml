@@ -1,11 +1,14 @@
 
 #---standard pioneer footprint---
 #---(in meters)---
-robot_radius: 0.17
-footprint_padding: 0.00
+#robot_radius: 0.17
+
+#The footprint of the robot and associated padding
+footprint: [[-0.3, -0.3], [-0.3, 0.3], [0.3, 0.3], [0.3, -0.3]]
+footprint_padding: 0.01
 
 transform_tolerance: 0.2
-map_type: costmap
+map_type: voxel
 
 always_send_full_costmap: true
 

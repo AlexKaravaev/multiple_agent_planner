@@ -124,6 +124,7 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2D* costmap,
         private_nh.param("publish_scale", publish_scale_, 100);
 
         double costmap_pub_freq;
+        
         private_nh.param("planner_costmap_publish_frequency", costmap_pub_freq, 0.0);
 
         make_plan_srv_ = private_nh.advertiseService("make_plan", &GlobalPlanner::makePlanService, this);

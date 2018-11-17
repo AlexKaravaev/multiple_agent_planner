@@ -1,0 +1,71 @@
+<!-- 
+  Simulate a differential drive robot with the teb_local_planner in stage:
+  - stage
+  - map_server
+  - move_base
+  - static map
+  - amcl
+  - rviz view
+ -->
+<launch>
+	
+	<!--  ************** Robot names       ***************  -->
+	<arg name="robotName1" default="robot_0" />
+	<arg name="robotName2" default="robot_1" />
+
+
+        <!--  ************** Global Parameters ***************  -->
+        <param name="/use_sim_time" value="true"/>
+
+        <!--  ************** Stage Simulator ***************  -->
+	<node pkg="stage_ros" type="stageros" name="stageros" args="$(find detached_planner)/stage/maze_diff_drive.world">
+    <!--< remap from="base_scan" to="scan"/>-->
+		
+  	</node>
+    <!--  ************** Navigation ***************  -->
+	<!--
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+  	  	<rosparam file="$(find detached_planner)/cfg/diff_drive/costmap_common_params.yaml" command="load" ns="global_costmap" />
+  	 	<rosparam file="$(find detached_planner)/cfg/diff_drive/costmap_common_params.yaml" command="load" ns="local_costmap" />
+  		<rosparam file="$(find detached_planner)/cfg/diff_drive/local_costmap_params.yaml" command="load" />
+  		<rosparam file="$(find detached_planner)/cfg/diff_drive/global_costmap_params.yaml" command="load" />
+  		<rosparam file="$(find detached_planner)/cfg/diff_drive/teb_local_planner_params.yaml" command="load" />
+		<rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
+	</node>-->
+
+
+	<!--  ****** Maps *****  -->
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find detached_planner)/maps/maze.yaml" output="screen">
+		<!--<param name="frame_id" value="map"/>-->
+	</node>
+
+	<!-- BEGIN ROBOT 0 -->
+	<group ns="robot_0">
+	<param name="tf_prefix" value="$(arg robotName1)" />
+	<include file="$(find detached_planner)/launch/inc/single_robot.launch" >
+	    	<arg name="namespace" value="$(arg robotName1)"/>
+	    	<arg name="initial_pose_x" value="2.0"/>
+	    	<arg name="initial_pose_y" value="2.0"/>
+	    	<arg name="initial_pose_a" value="0.0"/>
+    </include>
+	</group>
+	<!-- END ROBOT 0 -->
+
+
+	<!-- BEGIN ROBOT 1 -->
+	<group ns="robot_1">
+	<param name="tf_prefix" value="$(arg robotName2)" />
+	<include file="$(find detached_planner)/launch/inc/single_robot.launch" >
+	    	<arg name="namespace" value="$(arg robotName2)"/>
+	    	<arg name="initial_pose_x" value="5.0"/>
+	    	<arg name="initial_pose_y" value="5.0"/>
+	    	<arg name="initial_pose_a" value="0.0"/>
+	</include>
+	</group>
+	<!-- END ROBOT 1 -->
+
+
+	  <!--  **************** Visualisation ****************  -->
+	  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find detached_planner)/cfg/rviz_navigation.rviz"/>
+
+</launch>

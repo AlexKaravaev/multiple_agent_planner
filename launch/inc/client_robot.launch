@@ -1,3 +1,0 @@
-<launch>
-	<node pkg="detached_planner" type="client_patrol_single.py" name="client_node" output="screen"/>
-</launch>
