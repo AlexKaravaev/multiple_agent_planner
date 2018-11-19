@@ -47,7 +47,7 @@ Visualization Manager:
       Color: 255; 149; 0
       Enabled: true
       Name: "Robot 0: Global Plan"
-      Topic: /robot_0/move_base_node/TrajectoryPlannerROS/global_plan
+      Topic: /robot_0/move_base_node/GlobalPlanner/plan
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -55,43 +55,15 @@ Visualization Manager:
       Color: 0; 0; 255
       Enabled: true
       Name: "Robot 0: Local Plan"
-      Topic: /robot_0/move_base_node/TrajectoryPlannerROS/local_plan
+      Topic: /robot_0/move_base_node/TebLocalPlannerROS/local_plan
       Value: true
     - Alpha: 1
       Buffer Length: 1
-      Class: rviz/Path
-      Color: 255; 0; 0
-      Enabled: true
-      Name: "Robot 0: NavFn Plan"
-      Topic: /robot_0/move_base_node/NavfnROS/plan
-      Value: true
-    - Alpha: 1
-      Class: rviz/GridCells
-      Color: 0; 0; 255
-      Enabled: true
-      Name: "Robot 0: Inflated Obstacles"
-      Topic: /robot_0/move_base_node/local_costmap/inflated_obstacles
-      Value: true
-    - Alpha: 1
-      Class: rviz/GridCells
-      Color: 255; 0; 0
-      Enabled: true
-      Name: "Robot 0: Obstacles"
-      Topic: /robot_0/move_base_node/local_costmap/obstacles
-      Value: true
-    - Alpha: 1
-      Class: rviz/GridCells
-      Color: 0; 255; 0
-      Enabled: true
-      Name: "Robot 0: Unknown Space"
-      Topic: /robot_0/move_base_node/local_costmap/unknown_space
-      Value: true
-    - Alpha: 1
       Class: rviz/Polygon
       Color: 255; 0; 0
       Enabled: true
       Name: "Robot 0: Robot Footprint"
-      Topic: /robot_0/move_base_node/local_costmap/footprint_layer/footprint_stamped
+      Topic: /robot_0/move_base_node/local_costmap/footprint
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -99,7 +71,7 @@ Visualization Manager:
       Color: 255; 149; 0
       Enabled: true
       Name: "Robot 1: Global Plan"
-      Topic: /robot_1/move_base_node/TrajectoryPlannerROS/global_plan
+      Topic: /robot_1/move_base_node/GlobalPlanner/plan
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -107,43 +79,15 @@ Visualization Manager:
       Color: 0; 0; 255
       Enabled: true
       Name: "Robot 1: Local Plan"
-      Topic: /robot_1/move_base_node/TrajectoryPlannerROS/local_plan
+      Topic: /robot_1/move_base_node/TebLocalPlannerROS/local_plan
       Value: true
     - Alpha: 1
       Buffer Length: 1
-      Class: rviz/Path
-      Color: 255; 0; 0
-      Enabled: true
-      Name: "Robot 1: NavFn Plan"
-      Topic: /robot_1/move_base_node/NavfnROS/plan
-      Value: true
-    - Alpha: 1
-      Class: rviz/GridCells
-      Color: 0; 0; 255
-      Enabled: true
-      Name: "Robot 1: Inflated Obstacles"
-      Topic: /robot_1/move_base_node/local_costmap/inflated_obstacles
-      Value: true
-    - Alpha: 1
-      Class: rviz/GridCells
-      Color: 255; 0; 0
-      Enabled: true
-      Name: "Robot 1: Obstacles"
-      Topic: /robot_1/move_base_node/local_costmap/obstacles
-      Value: true
-    - Alpha: 1
-      Class: rviz/GridCells
-      Color: 0; 255; 0
-      Enabled: true
-      Name: "Robot 1: Unknown Space"
-      Topic: /robot_1/move_base_node/local_costmap/unknown_space
-      Value: true
-    - Alpha: 1
       Class: rviz/Polygon
-      Color: 170; 0; 255
+      Color: 255; 0; 0
       Enabled: true
       Name: "Robot 1: Robot Footprint"
-      Topic: /robot_1/move_base_node/local_costmap/footprint_layer/footprint_stamped
+      Topic: /robot_1/move_base_node/local_costmap/footprint
       Value: true
     - Class: rviz/TF
       Enabled: true

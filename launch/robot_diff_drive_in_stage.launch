@@ -2,8 +2,11 @@
   <master auto="start"/>
   <param name="/use_sim_time" value="true"/>
 
-
+<!--
 <node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map /base_link 1000"/>
+
+<node pkg="tf" type="static_transform_publisher" name="link_to_odom" args="0.0 0.0 0.0 0 0 0.0 /base_link      /odom 1000"/>
+-->
 
 <!--  ****** Maps *****  -->
 <node name="map_server" pkg="map_server" type="map_server" args="$(find detached_planner)/maps/maze.yaml" output="screen">
@@ -29,6 +32,14 @@
       <rosparam file="$(find detached_planner)/cfg/global_costmap_params.yaml" command="load" />
       <rosparam file="$(find detached_planner)/cfg/base_local_planner_params.yaml" command="load" />
       <rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
+      <param name="local_costmap/robot_base_frame" value="robot_0/base_link" />
+      <param name="global_costmap/robot_base_frame" value="robot_0/base_link" />
+      <param name="local_costmap/global_frame" value="robot_0/odom" />
+      <param name="global_costmap/observation_sources" value="robot_0/base_scan" />
+      <param name="local_costmap/observation_sources" value="robot_0/base_scan" />
+      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_0/base_scan" />
+      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_0/base_scan" />
+ 
     </node>
 
 
@@ -54,6 +65,14 @@
       <rosparam file="$(find detached_planner)/cfg/global_costmap_params.yaml" command="load" />
       <rosparam file="$(find detached_planner)/cfg/base_local_planner_params.yaml" command="load" />
       <rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
+      <param name="local_costmap/robot_base_frame" value="robot_1/base_link" />
+      <param name="global_costmap/robot_base_frame" value="robot_1/base_link" />
+      <param name="local_costmap/global_frame" value="robot_1/odom" />
+      <param name="local_costmap/observation_sources" value="robot_1/base_scan" />
+      <param name="global_costmap/observation_sources" value="robot_1/base_scan" />
+      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_1/base_scan" />
+      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_1/base_scan" />
+
     </node>
 
     <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false">
