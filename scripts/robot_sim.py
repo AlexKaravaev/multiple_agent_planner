@@ -30,11 +30,24 @@ class RoboSim:
         robot.close()
         end.close()
         final_launch.close()
-
+    
+    def generate_stage_file(self):
+        begin = open('./src/begin_stage.txt', 'r')
+        final_stage = open('final_stage.world', 'w')
+        
+        final_stage.write(begin.read())
+        
+    
+        for i in range(self.n_of_robots):
+            stage_robot = 'pr2(pose[0 0 0 0] name "pr2_' + str(i) +'" color "red" )\n'
+            final_stage.write(stage_robot)
+        
+        begin.close()
+        final_stage.close()
 
 if __name__=="__main__":
     rospy.init_node('robot_setter')
     sim = RoboSim()
     sim.generate_launch_file()
-
+    sim.generate_stage_file()
 
