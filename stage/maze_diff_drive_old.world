@@ -60,8 +60,8 @@ floorplan
   pose [  5.0  5.0 0.0 0.0 ]
 )
 
-pr2( pose [2 2 0 0] name "pr2_0" color "red" )
-pr2( pose [1 2 0 0] name "pr2_1" color "red" )
-pr2( pose [1 1 0 0] name "pr2_2" color "red" )
-pr2( pose [3 1 0 0] name "pr2_3" color "red" )
-pr2( pose [1 9 0 0] name "pr2_4" color "red" )
+# throw in a robot
+pr2( pose [ 2 2 0 0 ] name "pr2_0" color "blue")
+pr2( pose [ 5 5 0 0 ] name "pr2_1" color "green")
+#block( pose [ 12.5 15.5 0 180.000 ] color "red")
+
