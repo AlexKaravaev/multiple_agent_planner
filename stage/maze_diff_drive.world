@@ -60,8 +60,8 @@ floorplan
   pose [  5.0  5.0 0.0 0.0 ]
 )
 
-pr2( pose [2 2 0 0] name "pr2_0" color "red" )
-pr2( pose [1 2 0 0] name "pr2_1" color "red" )
-pr2( pose [1 1 0 0] name "pr2_2" color "red" )
-pr2( pose [3 1 0 0] name "pr2_3" color "red" )
-pr2( pose [1 9 0 0] name "pr2_4" color "red" )
+pr2(pose [4 3 0 0] name "pr2_0" color "red" )
+pr2(pose [3 1 0 0] name "pr2_1" color "red" )
+pr2(pose [2 9 0 0] name "pr2_2" color "red" )
+pr2(pose [4 1 0 0] name "pr2_3" color "red" )
+pr2(pose [2 4 0 0] name "pr2_4" color "red" )

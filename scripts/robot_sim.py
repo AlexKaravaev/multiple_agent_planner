@@ -48,7 +48,7 @@ class RoboSim:
             random_point = random.choice(self.open_spawn_points)
             pop_indx = self.open_spawn_points.index(random_point)
             self.open_spawn_points.pop(pop_indx)
-            stage_robot = 'pr2(pose[' + str(random_point[0]) +' ' + str(random_point[1]) + ' 0 0] name "pr2_' + str(i) +'" color "red" )\n'
+            stage_robot = 'pr2(pose [' + str(random_point[0]) +' ' + str(random_point[1]) + ' 0 0] name "pr2_' + str(i) +'" color "red" )\n'
             final_stage.write(stage_robot)
         
         begin.close()
