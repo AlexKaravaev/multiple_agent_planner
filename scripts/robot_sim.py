@@ -1,21 +1,35 @@
+#!/usr/bin/env python3
 import math
 import threading
 import rospy
 import sys
 import fileinput
 from geometry_msgs.msg import PointStamped
+from geometry_msgs.msg import PoseWithCovarianceStamped
+from geometry_msgs.msg import PoseArray
 import re
 import random
+import os
 
 class RoboSim:
     def __init__(self):
         self.ask_n()
+        self.spawn_points = []
+        self.spawn_poses  = []
+
+        rospy.init_node("robosim")
+        rospy.Subscriber("initial_pose", PoseWithCovarianceStamped,self.spawn_topic_callback)
+        self.array_pub = rospy.Publisher('/poses', PoseArray, queue_size=1)
+        
+        rospy.spin()
         
         # it's kostyl, but i will do it later more efficient
         self.open_spawn_points = [(x,y) for x in range(1,5) for y in range(1,5)]
         for x in range(1,5):
             self.open_spawn_points.append((x,9))
         
+        self.dir = os.path.dirname(__file__)
+
     def ask_n(self):
         self.n_of_robots = int(input("N of robots: "))
 
@@ -79,8 +93,20 @@ class RoboSim:
         self.generate_stage_file()
         self.generate_rviz_file()
 
+    def spawn_topic_callback(self, data):
+        self.spawn_points.append((data.position.x,data.position.y,data.orientation.z))
+        self.spawn_poses.append(data)
+        
+        msg = PoseArray()
+        msg.header.frame_id = "robots"
+        msg.header.stamp = rospy.Time.now()
+
+        for pose in self.spawn_poses:
+            msg.poses.append(Pose(pose.position, pose.orentation))
+    
+        self.array_pub.publish(msg)
+
 if __name__=="__main__":
-    rospy.init_node('robot_setter')
     sim = RoboSim()
     sim.generate_launch_file()
     sim.generate_stage_file()
