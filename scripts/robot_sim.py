@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
+import tf_conversions
 import math
-#import threading
 import rospy
 import sys
 import fileinput
@@ -12,18 +12,23 @@ import roslaunch
 import re
 import random
 import os
-
+import time
+#import tf2_ros
 
 class RoboSim:
     def __init__(self):
-        self.ask_n()
+        
         self.spawn_points = []
         self.spawn_poses  = []
+        self.asked = False
 
         rospy.init_node("robosim")
         rospy.Subscriber("initialpose", PoseWithCovarianceStamped,self.spawn_topic_callback)
         self.array_pub = rospy.Publisher('/poses', PoseArray, queue_size=1)
         
+        
+        time.sleep(1) 
+        self.ask_n()
         
         
         # it's kostyl, but i will do it later more efficient
@@ -36,8 +41,15 @@ class RoboSim:
         rospy.spin()
 
     def ask_n(self):
-        self.n_of_robots = int(input("N of robots: "))
+        while True:
+            try:
+                self.n_of_robots = int(input("N of robots:"))
+                break
+            except ValueError:
+                rospy.logwarn("Enter valid integer number of robots")
         self.temp_n = self.n_of_robots
+        rospy.loginfo("Now set initial poses of robots in rviz")
+        self.asked = True
 
     # Generate launch file given number of robots
     def generate_launch_file(self):
@@ -69,7 +81,7 @@ class RoboSim:
             pop_indx = self.open_spawn_points.index(random_point)
             self.open_spawn_points.pop(pop_indx)
             point = self.spawn_points[i]
-            stage_robot = 'pr2(pose [' + str(point[0]) +' ' + str(point[1]) +' '+str(point[2]) + ' 0] name "pr2_' + str(i) +'" color "red" )\n'
+            stage_robot = 'pr2(pose [' + str(point[0]) +' ' + str(point[1]) +' 0' + ' ' + str(math.degrees(point[2])) + '] name "pr2_' + str(i) +'" color "red" )\n'
             final_stage.write(stage_robot)
         
         begin.close()
@@ -106,22 +118,26 @@ class RoboSim:
         os.system("python3 " + self.dir + "/sim_start.py")
     
     def spawn_topic_callback(self, data):
-        if self.temp_n != 0:
-            self.spawn_points.append((data.pose.pose.position.x,data.pose.pose.position.y,data.pose.pose.orientation.z))
-            self.temp_n -= 1
-            self.spawn_poses.append(data)
-            rospy.loginfo("Got data from pose topic\n{}".format(data)) 
-            msg = PoseArray()
-            msg.header.frame_id = "/map"
-            msg.header.stamp = rospy.Time.now()
+        if self.asked:
+            if self.temp_n != 0:
+                self.spawn_points.append((data.pose.pose.position.x,data.pose.pose.position.y,tf_conversions.euler_from_quaternion(data.pose.pose.orientation.x,data.pose.pose.orientation.y,data.pose.pose.orientation.z,data.pose.pose.orientation.w)))
+                self.temp_n -= 1
+                self.spawn_poses.append(data)
+                rospy.loginfo("Got data from pose topic (x,y,(roll,pitch,yaw))\n{}".format(self.spawn_points[-1])) 
+                msg = PoseArray()
+                msg.header.frame_id = "/map"
+                msg.header.stamp = rospy.Time.now()
 
-            for _pose in self.spawn_poses:
-                msg.poses.append(Pose(_pose.pose.pose.position, _pose.pose.pose.orientation))
-            self.array_pub.publish(msg)
+                for _pose in self.spawn_poses:
+                    msg.poses.append(Pose(_pose.pose.pose.position, _pose.pose.pose.orientation))
+                self.array_pub.publish(msg)
 
-        if self.temp_n == 0:
-            self.generate_files()
-            
+            if self.temp_n == 0:
+                self.generate_files()
+        
+        else:
+            rospy.logwarn("Enter number of robots first!")
+            print("N of robots: ")
 
 if __name__=="__main__":
     sim = RoboSim()

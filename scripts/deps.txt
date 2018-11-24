@@ -1,0 +1,12 @@
+  netifaces
+  defusedxml
+  fileinput
+  geometry_msgs.msg
+  math
+  os
+  random
+  re
+  roslaunch
+  rospy
+  sys
+

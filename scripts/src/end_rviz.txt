@@ -66,9 +66,9 @@
       Class: rviz/Orbit
       Distance: 34.0994
       Focal Point:
-        X: 10.7606
-        Y: 30.9644
-        Z: -16.6598
+        X: 4
+        Y: 4
+        Z: 0
       Name: Current View
       Near Clip Distance: 0.01
       Pitch: 0.785398
