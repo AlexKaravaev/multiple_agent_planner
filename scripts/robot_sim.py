@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import tf_conversions
+#import tf_conversions
 import math
 import rospy
 import sys
@@ -39,6 +39,18 @@ class RoboSim:
         self.dir = os.path.dirname(__file__)
         
         rospy.spin()
+    
+    def quat_to_euler(self, quat):
+        q0 = quat[0]
+        q1 = quat[1]
+        q2 = quat[2]
+        q3 = quat[3]
+    
+        roll = math.atan2(2*(q0*q1 + q2*q3),1 - 2*(q1*q1 + q2*q2))
+        pitch = math.asin(2*(q0*q2 - q3*q1))
+        yaw = math.atan2(2*(q0*q3 + q1*q2), 1 - 2*(q2*q2 + q3*q3))
+
+        return (roll, pitch, yaw)
 
     def ask_n(self):
         while True:
@@ -81,7 +93,7 @@ class RoboSim:
             pop_indx = self.open_spawn_points.index(random_point)
             self.open_spawn_points.pop(pop_indx)
             point = self.spawn_points[i]
-            stage_robot = 'pr2(pose [' + str(point[0]) +' ' + str(point[1]) +' 0' + ' ' + str(math.degrees(point[2])) + '] name "pr2_' + str(i) +'" color "red" )\n'
+            stage_robot = 'pr2(pose [' + str(point[0]) +' ' + str(point[1]) +' 0' + ' ' + str(math.degrees(point[2][0])) + '] name "pr2_' + str(i) +'" color "red" )\n'
             final_stage.write(stage_robot)
         
         begin.close()
@@ -120,7 +132,8 @@ class RoboSim:
     def spawn_topic_callback(self, data):
         if self.asked:
             if self.temp_n != 0:
-                self.spawn_points.append((data.pose.pose.position.x,data.pose.pose.position.y,tf_conversions.euler_from_quaternion(data.pose.pose.orientation.x,data.pose.pose.orientation.y,data.pose.pose.orientation.z,data.pose.pose.orientation.w)))
+                self.spawn_points.append((data.pose.pose.position.x,data.pose.pose.position.y,self.quat_to_euler((data.pose.pose.orientation.x,data.pose.pose.orientation.y,data.pose.pose.orientation.z,data.pose.pose.orientation.w))))
+
                 self.temp_n -= 1
                 self.spawn_poses.append(data)
                 rospy.loginfo("Got data from pose topic (x,y,(roll,pitch,yaw))\n{}".format(self.spawn_points[-1])) 
