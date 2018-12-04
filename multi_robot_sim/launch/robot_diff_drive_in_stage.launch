@@ -8,27 +8,26 @@
 -->
 
 <!--  ****** Maps *****  -->
-<node name="map_server" pkg="map_server" type="map_server" args="$(find detached_planner)/maps/maze.yaml" output="screen">
+<node name="map_server" pkg="map_server" type="map_server" args="$(find multi_robot_sim)/maps/maze.yaml" output="screen">
     <param name="frame_id" value="map"/>
 </node>
 
 
 <!--  ************** Stage Simulator ***************  -->
-<node pkg="stage_ros" type="stageros" name="stageros" args="$(find detached_planner)/stage/maze_diff_drive.world">
+<node pkg="stage_ros" type="stageros" name="stageros" args="$(find multi_robot_sim)/stage/maze_diff_drive.world">
     <param name="base_watchdog_timeout" value="0.2"/>
 </node>
-
 <group ns="robot_0">
     <param name="tf_prefix" value="robot_0" />
     <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
       <remap from="map" to="/map" />
       <param name="controller_frequency" value="10.0" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/base_local_planner_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/base_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/move_base.yaml" command="load" />
       <param name="local_costmap/robot_base_frame" value="robot_0/base_link" />
       <param name="global_costmap/robot_base_frame" value="robot_0/base_link" />
       <param name="local_costmap/global_frame" value="robot_0/odom" />
@@ -69,12 +68,12 @@
     <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
       <remap from="map" to="/map" />
       <param name="controller_frequency" value="10.0" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/base_local_planner_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/base_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/move_base.yaml" command="load" />
       <param name="local_costmap/robot_base_frame" value="robot_1/base_link" />
       <param name="global_costmap/robot_base_frame" value="robot_1/base_link" />
       <param name="local_costmap/global_frame" value="robot_1/odom" />
@@ -110,6 +109,6 @@
 <node pkg="tf" type="static_transform_publisher" name="robot_1_map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map       /robot_1/odom 1000"/>
 -->
 <node pkg="tf" type="static_transform_publisher" name="robot_1_map_to_scan" args="0.0 0.0 0.0 0 0 0.0 /map /robot_1/base_scan 1000"/>
-<node name="rviz" pkg="rviz" type="rviz" args="-d $(find detached_planner)/cfg/multi_robot.rviz" />
+<node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_robot_sim)/cfg/multi_robot.rviz" />
 
 </launch>

@@ -1,0 +1,15 @@
+<launch>
+  <master auto="start" />
+  <param name="/use_sim_time" value="true" />
+	  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find multi_robot_sim)/stage/maze_clear.world">
+     <param name="base_watchdog_timeout" value="0.2"/>
+  </node>
+
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find multi_robot_sim)/maps/maze.yaml" output="screen">
+	<param name="frame_id" value="map" />
+  </node>
+  <node pkg="multi_robot_sim" name="robosim" type="robot_sim.py" output="screen" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_robot_sim)/cfg/spawn.rviz" />
+
+</launch>

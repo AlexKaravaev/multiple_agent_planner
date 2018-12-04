@@ -3,12 +3,12 @@
     <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
       <remap from="map" to="/map" />
       <param name="controller_frequency" value="10.0" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/base_local_planner_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/base_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/move_base.yaml" command="load" />
       <param name="local_costmap/robot_base_frame" value="robot_0/base_link" />
       <param name="global_costmap/robot_base_frame" value="robot_0/base_link" />
       <param name="local_costmap/global_frame" value="robot_0/odom" />

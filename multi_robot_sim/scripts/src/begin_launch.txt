@@ -8,13 +8,12 @@
 -->
 
 <!--  ****** Maps *****  -->
-<node name="map_server" pkg="map_server" type="map_server" args="$(find detached_planner)/maps/maze.yaml" output="screen">
+<node name="map_server" pkg="map_server" type="map_server" args="$(find multi_robot_sim)/maps/maze.yaml" output="screen">
     <param name="frame_id" value="map"/>
 </node>
 
 
 <!--  ************** Stage Simulator ***************  -->
-<node pkg="stage_ros" type="stageros" name="stageros" args="$(find detached_planner)/stage/maze_diff_drive.world">
+<node pkg="stage_ros" type="stageros" name="stageros" args="$(find multi_robot_sim)/stage/maze_diff_drive.world">
     <param name="base_watchdog_timeout" value="0.2"/>
 </node>
-

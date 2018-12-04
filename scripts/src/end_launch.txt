@@ -1,3 +1,0 @@
-<node name="rviz" pkg="rviz" type="rviz" args="-d $(find detached_planner)/cfg/multi_robot.rviz" />
-
-</launch>
