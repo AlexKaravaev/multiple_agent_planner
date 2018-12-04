@@ -2,7 +2,7 @@
  *
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, David V. Lu!!
+ *  Copyright (c) 2008, 2013, Willow Garage, Inc.
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
- *   * Neither the name of David V. Lu nor the names of its
+ *   * Neither the name of Willow Garage, Inc. nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -32,36 +32,48 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * Author: David V. Lu!!
+ * Author: Eitan Marder-Eppstein
+ *         David V. Lu!!
  *********************************************************************/
-#ifndef GLOBAL_PLANNER_ORIENTATION_FILTER_H
-#define GLOBAL_PLANNER_ORIENTATION_FILTER_H
-#include <nav_msgs/Path.h>
+#ifndef _POTENTIAL_CALCULATOR_H
+#define _POTENTIAL_CALCULATOR_H
+namespace detached_planner {
 
-namespace global_planner {
-
-enum OrientationMode { NONE, FORWARD, INTERPOLATE, FORWARDTHENINTERPOLATE, BACKWARD, LEFTWARD, RIGHTWARD };
-
-class OrientationFilter {
+class PotentialCalculator {
     public:
-        OrientationFilter() : omode_(NONE) {}
-    
-    
-        virtual void processPath(const geometry_msgs::PoseStamped& start,
-                                 std::vector<geometry_msgs::PoseStamped>& path);
-                                 
-        void setAngleBasedOnPositionDerivative(std::vector<geometry_msgs::PoseStamped>& path, int index);
-        void interpolate(std::vector<geometry_msgs::PoseStamped>& path, 
-                         int start_index, int end_index);
-                         
-        void setMode(OrientationMode new_mode){ omode_ = new_mode; }
-        void setMode(int new_mode){ setMode((OrientationMode) new_mode); }
+        PotentialCalculator(int nx, int ny) {
+            setSize(nx, ny);
+        }
 
-        void setWindowSize(size_t window_size){ window_size_ = window_size; }
+        virtual float calculatePotential(float* potential, unsigned char cost, int n, float prev_potential=-1){
+            if(prev_potential < 0){
+                // get min of neighbors
+                float min_h = std::min( potential[n - 1], potential[n + 1] ),
+                      min_v = std::min( potential[n - nx_], potential[n + nx_]);
+                prev_potential = std::min(min_h, min_v);
+            }
+
+            return prev_potential + cost;
+        }
+
+        /**
+         * @brief  Sets or resets the size of the map
+         * @param nx The x size of the map
+         * @param ny The y size of the map
+         */
+        virtual void setSize(int nx, int ny) {
+            nx_ = nx;
+            ny_ = ny;
+            ns_ = nx * ny;
+        } /**< sets or resets the size of the map */
+
     protected:
-        OrientationMode omode_;
-        int window_size_;
+        inline int toIndex(int x, int y) {
+            return x + nx_ * y;
+        }
+
+        int nx_, ny_, ns_; /**< size of grid, in pixels */
 };
 
-} //end namespace global_planner
+} //end namespace detached_planner
 #endif

@@ -35,45 +35,43 @@
  * Author: Eitan Marder-Eppstein
  *         David V. Lu!!
  *********************************************************************/
-#ifndef _POTENTIAL_CALCULATOR_H
-#define _POTENTIAL_CALCULATOR_H
-namespace global_planner {
+#ifndef _GRADIENT_PATH_H
+#define _GRADIENT_PATH_H
 
-class PotentialCalculator {
+#include<detached_planner/traceback.h>
+#include <math.h>
+
+namespace detached_planner {
+
+class GradientPath : public Traceback {
     public:
-        PotentialCalculator(int nx, int ny) {
-            setSize(nx, ny);
+        GradientPath(PotentialCalculator* p_calc);
+        ~GradientPath();
+
+        void setSize(int xs, int ys);
+
+        //
+        // Path construction
+        // Find gradient at array points, interpolate path
+        // Use step size of pathStep, usually 0.5 pixel
+        //
+        // Some sanity checks:
+        //  1. Stuck at same index position
+        //  2. Doesn't get near goal
+        //  3. Surrounded by high potentials
+        //
+        bool getPath(float* potential, double start_x, double start_y, double end_x, double end_y, std::vector<std::pair<float, float> >& path);
+    private:
+        inline int getNearestPoint(int stc, float dx, float dy) {
+            int pt = stc + (int)round(dx) + (int)(xs_ * round(dy));
+            return std::max(0, std::min(xs_ * ys_ - 1, pt));
         }
+        float gradCell(float* potential, int n);
 
-        virtual float calculatePotential(float* potential, unsigned char cost, int n, float prev_potential=-1){
-            if(prev_potential < 0){
-                // get min of neighbors
-                float min_h = std::min( potential[n - 1], potential[n + 1] ),
-                      min_v = std::min( potential[n - nx_], potential[n + nx_]);
-                prev_potential = std::min(min_h, min_v);
-            }
+        float *gradx_, *grady_; /**< gradient arrays, size of potential array */
 
-            return prev_potential + cost;
-        }
-
-        /**
-         * @brief  Sets or resets the size of the map
-         * @param nx The x size of the map
-         * @param ny The y size of the map
-         */
-        virtual void setSize(int nx, int ny) {
-            nx_ = nx;
-            ny_ = ny;
-            ns_ = nx * ny;
-        } /**< sets or resets the size of the map */
-
-    protected:
-        inline int toIndex(int x, int y) {
-            return x + nx_ * y;
-        }
-
-        int nx_, ny_, ns_; /**< size of grid, in pixels */
+        float pathStep_; /**< step size for following gradient */
 };
 
-} //end namespace global_planner
+} //end namespace detached_planner
 #endif

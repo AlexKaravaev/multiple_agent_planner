@@ -7,8 +7,6 @@ Panels:
         - /Global Options1
         - "/Robot 0: Robot Footprint1"
         - "/Robot 1: Robot Footprint1"
-        - /TF1
-        - /TF1/Frames1
       Splitter Ratio: 0.614796
     Tree Height: 543
   - Class: rviz/Selection

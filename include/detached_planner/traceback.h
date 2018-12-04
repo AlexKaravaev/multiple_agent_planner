@@ -35,41 +35,33 @@
  * Author: Eitan Marder-Eppstein
  *         David V. Lu!!
  *********************************************************************/
-#ifndef _ASTAR_H
-#define _ASTAR_H
+#ifndef _TRACEBACK_H
+#define _TRACEBACK_H
+#include<vector>
+#include<detached_planner/potential_calculator.h>
 
-#include <global_planner/planner_core.h>
-#include <global_planner/expander.h>
-#include <vector>
-#include <algorithm>
+namespace detached_planner {
 
-namespace global_planner {
-class Index {
+class Traceback {
     public:
-        Index(int a, float b) {
-            i = a;
-            cost = b;
+        Traceback(PotentialCalculator* p_calc) : p_calc_(p_calc) {}
+
+        virtual bool getPath(float* potential, double start_x, double start_y, double end_x, double end_y, std::vector<std::pair<float, float> >& path) = 0;
+        virtual void setSize(int xs, int ys) {
+            xs_ = xs;
+            ys_ = ys;
         }
-        int i;
-        float cost;
-};
-
-struct greater1 {
-        bool operator()(const Index& a, const Index& b) const {
-            return a.cost > b.cost;
+        inline int getIndex(int x, int y) {
+            return x + y * xs_;
         }
+        void setLethalCost(unsigned char lethal_cost) {
+            lethal_cost_ = lethal_cost;
+        }
+    protected:
+        int xs_, ys_;
+        unsigned char lethal_cost_;
+        PotentialCalculator* p_calc_;
 };
 
-class AStarExpansion : public Expander {
-    public:
-        AStarExpansion(PotentialCalculator* p_calc, int nx, int ny);
-        bool calculatePotentials(unsigned char* costs, double start_x, double start_y, double end_x, double end_y, int cycles,
-                                float* potential);
-    private:
-        void add(unsigned char* costs, float* potential, float prev_potential, int next_i, int end_x, int end_y);
-        std::vector<Index> queue_;
-};
-
-} //end namespace global_planner
+} //end namespace detached_planner
 #endif
-

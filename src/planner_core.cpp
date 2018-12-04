@@ -35,21 +35,21 @@
  * Author: Eitan Marder-Eppstein
  *         David V. Lu!!
  *********************************************************************/
-#include <global_planner/planner_core.h>
+#include <detached_planner/planner_core.h>
 #include <pluginlib/class_list_macros.h>
 #include <costmap_2d/cost_values.h>
 #include <costmap_2d/costmap_2d.h>
 
-#include <global_planner/dijkstra.h>
-#include <global_planner/astar.h>
-#include <global_planner/grid_path.h>
-#include <global_planner/gradient_path.h>
-#include <global_planner/quadratic_calculator.h>
+#include <detached_planner/dijkstra.h>
+#include <detached_planner/astar.h>
+#include <detached_planner/grid_path.h>
+#include <detached_planner/gradient_path.h>
+#include <detached_planner/quadratic_calculator.h>
 
 //register this planner as a BaseGlobalPlanner plugin
-PLUGINLIB_EXPORT_CLASS(global_planner::GlobalPlanner, nav_core::BaseGlobalPlanner)
+PLUGINLIB_EXPORT_CLASS(detached_planner::GlobalPlanner, nav_core::BaseGlobalPlanner)
 
-namespace global_planner {
+namespace detached_planner {
 
 void GlobalPlanner::outlineMap(unsigned char* costarr, int nx, int ny, unsigned char value) {
     unsigned char* pc = costarr;
@@ -105,9 +105,12 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2D* costmap,
         else
             convert_offset_ = 0.0;
 
-        p_calc_ = new PotentialCalculator(cx, cy);
+        p_calc_ = new QuadraticCalculator(cx, cy);
 
-        planner_ = new AStarExpansion(p_calc_, cx, cy);
+        DijkstraExpansion* de = new DijkstraExpansion(p_calc_, cx, cy);
+        if(!old_navfn_behavior_)
+          de->setPreciseStart(true);
+        planner_ = de;
 
         path_maker_ = new GradientPath(p_calc_);
 
@@ -124,23 +127,24 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2D* costmap,
         private_nh.param("publish_scale", publish_scale_, 100);
 
         double costmap_pub_freq;
-        
+
         private_nh.param("planner_costmap_publish_frequency", costmap_pub_freq, 0.0);
 
         make_plan_srv_ = private_nh.advertiseService("make_plan", &GlobalPlanner::makePlanService, this);
 
-        dsrv_ = new dynamic_reconfigure::Server<global_planner::GlobalPlannerConfig>(ros::NodeHandle("~/" + name));
-        dynamic_reconfigure::Server<global_planner::GlobalPlannerConfig>::CallbackType cb = boost::bind(
+        dsrv_ = new dynamic_reconfigure::Server<detached_planner::GlobalPlannerConfig>(ros::NodeHandle("~/" + name));
+        dynamic_reconfigure::Server<detached_planner::GlobalPlannerConfig>::CallbackType cb = boost::bind(
                 &GlobalPlanner::reconfigureCB, this, _1, _2);
         dsrv_->setCallback(cb);
 
         initialized_ = true;
+
     } else
         ROS_WARN("This planner has already been initialized, you can't call it twice, doing nothing");
 
 }
 
-void GlobalPlanner::reconfigureCB(global_planner::GlobalPlannerConfig& config, uint32_t level) {
+void GlobalPlanner::reconfigureCB(detached_planner::GlobalPlannerConfig& config, uint32_t level) {
     planner_->setLethalCost(config.lethal_cost);
     path_maker_->setLethalCost(config.lethal_cost);
     planner_->setNeutralCost(config.neutral_cost);
@@ -272,7 +276,7 @@ bool GlobalPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geom
 
     bool found_legal = planner_->calculatePotentials(costmap_->getCharMap(), start_x, start_y, goal_x, goal_y,
                                                     nx * ny * 2, potential_array_);
-
+    ROS_WARN("DETACHED PLANNER IS INITIALIZED");
     if(!old_navfn_behavior_)
         planner_->clearEndpoint(costmap_->getCharMap(), potential_array_, goal_x_i, goal_y_i, 2);
     if(publish_potential_)
@@ -410,4 +414,4 @@ void GlobalPlanner::publishPotential(float* potential)
     potential_pub_.publish(grid);
 }
 
-} //end namespace global_planner
+} //end namespace detached_planner

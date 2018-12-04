@@ -12,11 +12,13 @@
       <param name="local_costmap/robot_base_frame" value="robot_0/base_link" />
       <param name="global_costmap/robot_base_frame" value="robot_0/base_link" />
       <param name="local_costmap/global_frame" value="robot_0/odom" />
-      <param name="global_costmap/observation_sources" value="robot_0/base_scan" />
-      <param name="local_costmap/observation_sources" value="robot_0/base_scan" />
+
+      <param name="base_global_planner" value="detached_planner/GlobalPlanner" />
       <param name="global_costmap/obstacle_layer/observation_sources" value="robot_0/base_scan" />
       <param name="local_costmap/obstacle_layer/observation_sources" value="robot_0/base_scan" />
- 
+      <param name="global_costmap/observation_sources" value="robot_0/base_scan" />
+      <param name="local_costmap/observation_sources" value="robot_0/base_scan" />
+
     </node>
 
 
@@ -24,4 +26,21 @@
       <param name="odom_frame_id" value="robot_0/odom" />
       <param name="base_frame_id" value="robot_0/base_link" />
     </node>
+
+    <!--
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <remap from="scan" to="base_scan"/>
+        <param name="odom_frame_id" value="robot_0/odom" />
+        <param name="base_frame_id" value="robot_0/base_link" />
+        <param name="global_frame_id" value="/map" />
+        <param name="use_map_topic" value="true" />
+        <param name="odom_model_type" value="diff" />
+
+    </node>
+    -->
 </group>
+
+<!--
+<node pkg="tf" type="static_transform_publisher" name="robot_0_map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map       /robot_0/odom 1000"/>
+-->
+<node pkg="tf" type="static_transform_publisher" name="robot_0_map_to_scan" args="0.0 0.0 0.0 0 0 0.0 /map /robot_0/base_scan 1000"/>

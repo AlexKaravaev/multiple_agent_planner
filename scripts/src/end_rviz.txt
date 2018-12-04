@@ -1,44 +1,12 @@
-    - Class: rviz/TF
+    - Alpha: 1
+      Class: rviz/Map
+      Color Scheme: costmap
+      Draw Behind: false
       Enabled: true
-      Frame Timeout: 15
-      Frames:
-        All Enabled: true
-        map:
-          Value: true
-        robot_0/base_footprint:
-          Value: true
-        robot_0/base_laser_link:
-          Value: true
-        robot_0/base_link:
-          Value: true
-        robot_0/odom:
-          Value: true
-        robot_1/base_footprint:
-          Value: true
-        robot_1/base_laser_link:
-          Value: true
-        robot_1/base_link:
-          Value: true
-        robot_1/odom:
-          Value: true
-      Marker Scale: 1
-      Name: TF
-      Show Arrows: true
-      Show Axes: true
-      Show Names: true
-      Tree:
-        map:
-          robot_0/odom:
-            robot_0/base_footprint:
-              robot_0/base_link:
-                robot_0/base_laser_link:
-                  {}
-          robot_1/odom:
-            robot_1/base_footprint:
-              robot_1/base_link:
-                robot_1/base_laser_link:
-                  {}
-      Update Interval: 0
+      Name: Map
+      Topic: /robot_0/move_base_node/global_costmap/costmap
+      Unreliable: false
+      Use Timestamp: false
       Value: true
   Enabled: true
   Global Options:

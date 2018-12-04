@@ -37,10 +37,10 @@
  *********************************************************************/
 #ifndef _EXPANDER_H
 #define _EXPANDER_H
-#include <global_planner/potential_calculator.h>
-#include <global_planner/planner_core.h>
+#include <detached_planner/potential_calculator.h>
+#include <detached_planner/planner_core.h>
 
-namespace global_planner {
+namespace detached_planner {
 
 class Expander {
     public:
@@ -102,5 +102,5 @@ class Expander {
 
 };
 
-} //end namespace global_planner
+} //end namespace detached_planner
 #endif

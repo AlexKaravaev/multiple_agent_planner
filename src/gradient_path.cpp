@@ -35,12 +35,12 @@
  * Author: Eitan Marder-Eppstein
  *         David V. Lu!!
  *********************************************************************/
-#include <global_planner/gradient_path.h>
+#include <detached_planner/gradient_path.h>
 #include <algorithm>
 #include <stdio.h>
-#include <global_planner/planner_core.h>
+#include <detached_planner/planner_core.h>
 
-namespace global_planner {
+namespace detached_planner {
 
 GradientPath::GradientPath(PotentialCalculator* p_calc) :
         Traceback(p_calc), pathStep_(0.5) {
@@ -311,5 +311,4 @@ float GradientPath::gradCell(float* potential, int n) {
     return norm;
 }
 
-} //end namespace global_planner
-
+} //end namespace detached_planner

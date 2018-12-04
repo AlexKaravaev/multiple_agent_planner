@@ -32,11 +32,13 @@
       <param name="local_costmap/robot_base_frame" value="robot_0/base_link" />
       <param name="global_costmap/robot_base_frame" value="robot_0/base_link" />
       <param name="local_costmap/global_frame" value="robot_0/odom" />
-      <param name="global_costmap/observation_sources" value="robot_0/base_scan" />
-      <param name="local_costmap/observation_sources" value="robot_0/base_scan" />
+
+      <param name="base_global_planner" value="detached_planner/GlobalPlanner" />
       <param name="global_costmap/obstacle_layer/observation_sources" value="robot_0/base_scan" />
       <param name="local_costmap/obstacle_layer/observation_sources" value="robot_0/base_scan" />
- 
+      <param name="global_costmap/observation_sources" value="robot_0/base_scan" />
+      <param name="local_costmap/observation_sources" value="robot_0/base_scan" />
+
     </node>
 
 
@@ -44,7 +46,24 @@
       <param name="odom_frame_id" value="robot_0/odom" />
       <param name="base_frame_id" value="robot_0/base_link" />
     </node>
+
+    <!--
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <remap from="scan" to="base_scan"/>
+        <param name="odom_frame_id" value="robot_0/odom" />
+        <param name="base_frame_id" value="robot_0/base_link" />
+        <param name="global_frame_id" value="/map" />
+        <param name="use_map_topic" value="true" />
+        <param name="odom_model_type" value="diff" />
+
+    </node>
+    -->
 </group>
+
+<!--
+<node pkg="tf" type="static_transform_publisher" name="robot_0_map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map       /robot_0/odom 1000"/>
+-->
+<node pkg="tf" type="static_transform_publisher" name="robot_0_map_to_scan" args="0.0 0.0 0.0 0 0 0.0 /map /robot_0/base_scan 1000"/>
 <group ns="robot_1">
     <param name="tf_prefix" value="robot_1" />
     <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
@@ -59,11 +78,13 @@
       <param name="local_costmap/robot_base_frame" value="robot_1/base_link" />
       <param name="global_costmap/robot_base_frame" value="robot_1/base_link" />
       <param name="local_costmap/global_frame" value="robot_1/odom" />
-      <param name="global_costmap/observation_sources" value="robot_1/base_scan" />
-      <param name="local_costmap/observation_sources" value="robot_1/base_scan" />
+
+      <param name="base_global_planner" value="detached_planner/GlobalPlanner" />
       <param name="global_costmap/obstacle_layer/observation_sources" value="robot_1/base_scan" />
       <param name="local_costmap/obstacle_layer/observation_sources" value="robot_1/base_scan" />
- 
+      <param name="global_costmap/observation_sources" value="robot_1/base_scan" />
+      <param name="local_costmap/observation_sources" value="robot_1/base_scan" />
+
     </node>
 
 
@@ -71,142 +92,24 @@
       <param name="odom_frame_id" value="robot_1/odom" />
       <param name="base_frame_id" value="robot_1/base_link" />
     </node>
+
+    <!--
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <remap from="scan" to="base_scan"/>
+        <param name="odom_frame_id" value="robot_1/odom" />
+        <param name="base_frame_id" value="robot_1/base_link" />
+        <param name="global_frame_id" value="/map" />
+        <param name="use_map_topic" value="true" />
+        <param name="odom_model_type" value="diff" />
+
+    </node>
+    -->
 </group>
-<group ns="robot_2">
-    <param name="tf_prefix" value="robot_2" />
-    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
-      <remap from="map" to="/map" />
-      <param name="controller_frequency" value="10.0" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/base_local_planner_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
-      <param name="local_costmap/robot_base_frame" value="robot_2/base_link" />
-      <param name="global_costmap/robot_base_frame" value="robot_2/base_link" />
-      <param name="local_costmap/global_frame" value="robot_2/odom" />
-      <param name="global_costmap/observation_sources" value="robot_2/base_scan" />
-      <param name="local_costmap/observation_sources" value="robot_2/base_scan" />
-      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_2/base_scan" />
-      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_2/base_scan" />
- 
-    </node>
 
-
-    <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false" output="screen">
-      <param name="odom_frame_id" value="robot_2/odom" />
-      <param name="base_frame_id" value="robot_2/base_link" />
-    </node>
-</group>
-<group ns="robot_3">
-    <param name="tf_prefix" value="robot_3" />
-    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
-      <remap from="map" to="/map" />
-      <param name="controller_frequency" value="10.0" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/base_local_planner_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
-      <param name="local_costmap/robot_base_frame" value="robot_3/base_link" />
-      <param name="global_costmap/robot_base_frame" value="robot_3/base_link" />
-      <param name="local_costmap/global_frame" value="robot_3/odom" />
-      <param name="global_costmap/observation_sources" value="robot_3/base_scan" />
-      <param name="local_costmap/observation_sources" value="robot_3/base_scan" />
-      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_3/base_scan" />
-      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_3/base_scan" />
- 
-    </node>
-
-
-    <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false" output="screen">
-      <param name="odom_frame_id" value="robot_3/odom" />
-      <param name="base_frame_id" value="robot_3/base_link" />
-    </node>
-</group>
-<group ns="robot_4">
-    <param name="tf_prefix" value="robot_4" />
-    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
-      <remap from="map" to="/map" />
-      <param name="controller_frequency" value="10.0" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/base_local_planner_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
-      <param name="local_costmap/robot_base_frame" value="robot_4/base_link" />
-      <param name="global_costmap/robot_base_frame" value="robot_4/base_link" />
-      <param name="local_costmap/global_frame" value="robot_4/odom" />
-      <param name="global_costmap/observation_sources" value="robot_4/base_scan" />
-      <param name="local_costmap/observation_sources" value="robot_4/base_scan" />
-      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_4/base_scan" />
-      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_4/base_scan" />
- 
-    </node>
-
-
-    <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false" output="screen">
-      <param name="odom_frame_id" value="robot_4/odom" />
-      <param name="base_frame_id" value="robot_4/base_link" />
-    </node>
-</group>
-<group ns="robot_5">
-    <param name="tf_prefix" value="robot_5" />
-    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
-      <remap from="map" to="/map" />
-      <param name="controller_frequency" value="10.0" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/base_local_planner_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
-      <param name="local_costmap/robot_base_frame" value="robot_5/base_link" />
-      <param name="global_costmap/robot_base_frame" value="robot_5/base_link" />
-      <param name="local_costmap/global_frame" value="robot_5/odom" />
-      <param name="global_costmap/observation_sources" value="robot_5/base_scan" />
-      <param name="local_costmap/observation_sources" value="robot_5/base_scan" />
-      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_5/base_scan" />
-      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_5/base_scan" />
- 
-    </node>
-
-
-    <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false" output="screen">
-      <param name="odom_frame_id" value="robot_5/odom" />
-      <param name="base_frame_id" value="robot_5/base_link" />
-    </node>
-</group>
-<group ns="robot_6">
-    <param name="tf_prefix" value="robot_6" />
-    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
-      <remap from="map" to="/map" />
-      <param name="controller_frequency" value="10.0" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(find detached_planner)/cfg/local_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/global_costmap_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/base_local_planner_params.yaml" command="load" />
-      <rosparam file="$(find detached_planner)/cfg/move_base.yaml" command="load" />
-      <param name="local_costmap/robot_base_frame" value="robot_6/base_link" />
-      <param name="global_costmap/robot_base_frame" value="robot_6/base_link" />
-      <param name="local_costmap/global_frame" value="robot_6/odom" />
-      <param name="global_costmap/observation_sources" value="robot_6/base_scan" />
-      <param name="local_costmap/observation_sources" value="robot_6/base_scan" />
-      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_6/base_scan" />
-      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_6/base_scan" />
- 
-    </node>
-
-
-    <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false" output="screen">
-      <param name="odom_frame_id" value="robot_6/odom" />
-      <param name="base_frame_id" value="robot_6/base_link" />
-    </node>
-</group>
+<!--
+<node pkg="tf" type="static_transform_publisher" name="robot_1_map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map       /robot_1/odom 1000"/>
+-->
+<node pkg="tf" type="static_transform_publisher" name="robot_1_map_to_scan" args="0.0 0.0 0.0 0 0 0.0 /map /robot_1/base_scan 1000"/>
 <node name="rviz" pkg="rviz" type="rviz" args="-d $(find detached_planner)/cfg/multi_robot.rviz" />
 
 </launch>

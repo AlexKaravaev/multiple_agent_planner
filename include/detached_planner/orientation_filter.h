@@ -2,7 +2,7 @@
  *
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2008, 2013, Willow Garage, Inc.
+ *  Copyright (c) 2015, David V. Lu!!
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
- *   * Neither the name of Willow Garage, Inc. nor the names of its
+ *   * Neither the name of David V. Lu nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -32,36 +32,36 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * Author: Eitan Marder-Eppstein
- *         David V. Lu!!
+ * Author: David V. Lu!!
  *********************************************************************/
-#ifndef _TRACEBACK_H
-#define _TRACEBACK_H
-#include<vector>
-#include<global_planner/potential_calculator.h>
+#ifndef detached_planner_ORIENTATION_FILTER_H
+#define detached_planner_ORIENTATION_FILTER_H
+#include <nav_msgs/Path.h>
 
-namespace global_planner {
+namespace detached_planner {
 
-class Traceback {
+enum OrientationMode { NONE, FORWARD, INTERPOLATE, FORWARDTHENINTERPOLATE, BACKWARD, LEFTWARD, RIGHTWARD };
+
+class OrientationFilter {
     public:
-        Traceback(PotentialCalculator* p_calc) : p_calc_(p_calc) {}
+        OrientationFilter() : omode_(NONE) {}
 
-        virtual bool getPath(float* potential, double start_x, double start_y, double end_x, double end_y, std::vector<std::pair<float, float> >& path) = 0;
-        virtual void setSize(int xs, int ys) {
-            xs_ = xs;
-            ys_ = ys;
-        }
-        inline int getIndex(int x, int y) {
-            return x + y * xs_;
-        }
-        void setLethalCost(unsigned char lethal_cost) {
-            lethal_cost_ = lethal_cost;
-        }
+
+        virtual void processPath(const geometry_msgs::PoseStamped& start,
+                                 std::vector<geometry_msgs::PoseStamped>& path);
+
+        void setAngleBasedOnPositionDerivative(std::vector<geometry_msgs::PoseStamped>& path, int index);
+        void interpolate(std::vector<geometry_msgs::PoseStamped>& path,
+                         int start_index, int end_index);
+
+        void setMode(OrientationMode new_mode){ omode_ = new_mode; }
+        void setMode(int new_mode){ setMode((OrientationMode) new_mode); }
+
+        void setWindowSize(size_t window_size){ window_size_ = window_size; }
     protected:
-        int xs_, ys_;
-        unsigned char lethal_cost_;
-        PotentialCalculator* p_calc_;
+        OrientationMode omode_;
+        int window_size_;
 };
 
-} //end namespace global_planner
+} //end namespace detached_planner
 #endif

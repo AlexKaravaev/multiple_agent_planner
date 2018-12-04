@@ -35,9 +35,9 @@
  * Author: Eitan Marder-Eppstein
  *         David V. Lu!!
  *********************************************************************/
-#include<global_planner/dijkstra.h>
+#include<detached_planner/dijkstra.h>
 #include <algorithm>
-namespace global_planner {
+namespace detached_planner {
 
 DijkstraExpansion::DijkstraExpansion(PotentialCalculator* p_calc, int nx, int ny) :
         Expander(p_calc, nx, ny), pending_(NULL), precise_(false) {
@@ -130,7 +130,7 @@ bool DijkstraExpansion::calculatePotentials(unsigned char* costs, double start_x
 
     for (; cycle < cycles; cycle++) // go for this many cycles, unless interrupted
             {
-        // 
+        //
         if (currentEnd_ == 0 && nextEnd_ == 0) // priority blocks empty
             return false;
 
@@ -231,4 +231,4 @@ inline void DijkstraExpansion::updateCell(unsigned char* costs, float* potential
     }
 }
 
-} //end namespace global_planner
+} //end namespace detached_planner

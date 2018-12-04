@@ -47,20 +47,20 @@
 #include <nav_core/base_global_planner.h>
 #include <nav_msgs/GetPlan.h>
 #include <dynamic_reconfigure/server.h>
-#include <global_planner/potential_calculator.h>
-#include <global_planner/expander.h>
-#include <global_planner/traceback.h>
-#include <global_planner/orientation_filter.h>
-#include <global_planner/GlobalPlannerConfig.h>
+#include <detached_planner/potential_calculator.h>
+#include <detached_planner/expander.h>
+#include <detached_planner/traceback.h>
+#include <detached_planner/orientation_filter.h>
+#include <detached_planner/GlobalPlannerConfig.h>
 
-namespace global_planner {
+namespace detached_planner {
 
 class Expander;
 class GridPath;
 
 /**
  * @class PlannerCore
- * @brief Provides a ROS wrapper for the global_planner planner which runs a fast, interpolated navigation function on a costmap.
+ * @brief Provides a ROS wrapper for the detached_planner planner which runs a fast, interpolated navigation function on a costmap.
  */
 
 class GlobalPlanner : public nav_core::BaseGlobalPlanner {
@@ -200,11 +200,11 @@ class GlobalPlanner : public nav_core::BaseGlobalPlanner {
         bool old_navfn_behavior_;
         float convert_offset_;
 
-        dynamic_reconfigure::Server<global_planner::GlobalPlannerConfig> *dsrv_;
-        void reconfigureCB(global_planner::GlobalPlannerConfig &config, uint32_t level);
+        dynamic_reconfigure::Server<detached_planner::GlobalPlannerConfig> *dsrv_;
+        void reconfigureCB(detached_planner::GlobalPlannerConfig &config, uint32_t level);
 
 };
 
-} //end namespace global_planner
+} //end namespace detached_planner
 
 #endif

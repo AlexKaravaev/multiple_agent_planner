@@ -35,18 +35,40 @@
  * Author: Eitan Marder-Eppstein
  *         David V. Lu!!
  *********************************************************************/
-#ifndef _GRID_PATH_H
-#define _GRID_PATH_H
-#include<vector>
-#include<global_planner/traceback.h>
+#ifndef _ASTAR_H
+#define _ASTAR_H
 
-namespace global_planner {
+#include <detached_planner/planner_core.h>
+#include <detached_planner/expander.h>
+#include <vector>
+#include <algorithm>
 
-class GridPath : public Traceback {
+namespace detached_planner {
+class Index {
     public:
-        GridPath(PotentialCalculator* p_calc): Traceback(p_calc){}
-        bool getPath(float* potential, double start_x, double start_y, double end_x, double end_y, std::vector<std::pair<float, float> >& path);
+        Index(int a, float b) {
+            i = a;
+            cost = b;
+        }
+        int i;
+        float cost;
 };
 
-} //end namespace global_planner
+struct greater1 {
+        bool operator()(const Index& a, const Index& b) const {
+            return a.cost > b.cost;
+        }
+};
+
+class AStarExpansion : public Expander {
+    public:
+        AStarExpansion(PotentialCalculator* p_calc, int nx, int ny);
+        bool calculatePotentials(unsigned char* costs, double start_x, double start_y, double end_x, double end_y, int cycles,
+                                float* potential);
+    private:
+        void add(unsigned char* costs, float* potential, float prev_potential, int next_i, int end_x, int end_y);
+        std::vector<Index> queue_;
+};
+
+} //end namespace detached_planner
 #endif
