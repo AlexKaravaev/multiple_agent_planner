@@ -1,4 +1,28 @@
-# detached_planner
+# multi agent simulation
 WIP
-Project, that implements pathfinding algorithms for multiple agents. 
-All done in ROS. All simulation is in stage. Rviz is added for visualization purposes.
+ROS package, that shows complete detached planner out of ROS nav_core package
+All copyright goes to makers of nav_core
+In this pakage i did not implement anything, just showed how to detach it
+
+## Getting Started
+
+Installing: git clone https://github.com/AlexKaravaev/multiple_agent_planner
+
+### Prerequisites
+
+What things you need to install the software and how to install them
+
+```
+ros deps:
+  nav_core
+  nav_core_msgs
+  fake_localization
+
+```
+
+
+## Usage
+Set this parameter
+```
+<param name="base_global_planner" value="detached_planner/GlobalPlanner" />
+```
