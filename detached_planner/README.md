@@ -6,7 +6,7 @@ In this pakage i did not implement anything, just showed how to detach it
 
 ## Getting Started
 
-Installing: git clone https://github.com/AlexKaravaev/multiple_agent_planner
+Installing: git clone git@bitbucket.org:AlexKaravaev/multiple_agent_planner.git
 
 ### Prerequisites
 

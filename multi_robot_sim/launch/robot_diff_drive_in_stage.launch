@@ -477,6 +477,236 @@
 <node pkg="tf" type="static_transform_publisher" name="robot_9_map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map       /robot_9/odom 1000"/>
 -->
 <node pkg="tf" type="static_transform_publisher" name="robot_9_map_to_scan" args="0.0 0.0 0.0 0 0 0.0 /map /robot_9/base_scan 1000"/>
+<group ns="robot_10">
+    <param name="tf_prefix" value="robot_10" />
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+      <remap from="map" to="/map" />
+      <param name="controller_frequency" value="10.0" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/base_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/move_base.yaml" command="load" />
+      <param name="local_costmap/robot_base_frame" value="robot_10/base_link" />
+      <param name="global_costmap/robot_base_frame" value="robot_10/base_link" />
+      <param name="local_costmap/global_frame" value="robot_10/odom" />
+
+      <param name="base_global_planner" value="detached_planner/GlobalPlanner" />
+      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_10/base_scan" />
+      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_10/base_scan" />
+      <param name="global_costmap/observation_sources" value="robot_10/base_scan" />
+      <param name="local_costmap/observation_sources" value="robot_10/base_scan" />
+
+    </node>
+
+
+    <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false" output="screen">
+      <param name="odom_frame_id" value="robot_10/odom" />
+      <param name="base_frame_id" value="robot_10/base_link" />
+    </node>
+
+    <!--
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <remap from="scan" to="base_scan"/>
+        <param name="odom_frame_id" value="robot_10/odom" />
+        <param name="base_frame_id" value="robot_10/base_link" />
+        <param name="global_frame_id" value="/map" />
+        <param name="use_map_topic" value="true" />
+        <param name="odom_model_type" value="diff" />
+
+    </node>
+    -->
+</group>
+
+<!--
+<node pkg="tf" type="static_transform_publisher" name="robot_10_map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map       /robot_10/odom 1000"/>
+-->
+<node pkg="tf" type="static_transform_publisher" name="robot_10_map_to_scan" args="0.0 0.0 0.0 0 0 0.0 /map /robot_10/base_scan 1000"/>
+<group ns="robot_11">
+    <param name="tf_prefix" value="robot_11" />
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+      <remap from="map" to="/map" />
+      <param name="controller_frequency" value="10.0" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/base_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/move_base.yaml" command="load" />
+      <param name="local_costmap/robot_base_frame" value="robot_11/base_link" />
+      <param name="global_costmap/robot_base_frame" value="robot_11/base_link" />
+      <param name="local_costmap/global_frame" value="robot_11/odom" />
+
+      <param name="base_global_planner" value="detached_planner/GlobalPlanner" />
+      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_11/base_scan" />
+      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_11/base_scan" />
+      <param name="global_costmap/observation_sources" value="robot_11/base_scan" />
+      <param name="local_costmap/observation_sources" value="robot_11/base_scan" />
+
+    </node>
+
+
+    <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false" output="screen">
+      <param name="odom_frame_id" value="robot_11/odom" />
+      <param name="base_frame_id" value="robot_11/base_link" />
+    </node>
+
+    <!--
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <remap from="scan" to="base_scan"/>
+        <param name="odom_frame_id" value="robot_11/odom" />
+        <param name="base_frame_id" value="robot_11/base_link" />
+        <param name="global_frame_id" value="/map" />
+        <param name="use_map_topic" value="true" />
+        <param name="odom_model_type" value="diff" />
+
+    </node>
+    -->
+</group>
+
+<!--
+<node pkg="tf" type="static_transform_publisher" name="robot_11_map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map       /robot_11/odom 1000"/>
+-->
+<node pkg="tf" type="static_transform_publisher" name="robot_11_map_to_scan" args="0.0 0.0 0.0 0 0 0.0 /map /robot_11/base_scan 1000"/>
+<group ns="robot_12">
+    <param name="tf_prefix" value="robot_12" />
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+      <remap from="map" to="/map" />
+      <param name="controller_frequency" value="10.0" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/base_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/move_base.yaml" command="load" />
+      <param name="local_costmap/robot_base_frame" value="robot_12/base_link" />
+      <param name="global_costmap/robot_base_frame" value="robot_12/base_link" />
+      <param name="local_costmap/global_frame" value="robot_12/odom" />
+
+      <param name="base_global_planner" value="detached_planner/GlobalPlanner" />
+      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_12/base_scan" />
+      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_12/base_scan" />
+      <param name="global_costmap/observation_sources" value="robot_12/base_scan" />
+      <param name="local_costmap/observation_sources" value="robot_12/base_scan" />
+
+    </node>
+
+
+    <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false" output="screen">
+      <param name="odom_frame_id" value="robot_12/odom" />
+      <param name="base_frame_id" value="robot_12/base_link" />
+    </node>
+
+    <!--
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <remap from="scan" to="base_scan"/>
+        <param name="odom_frame_id" value="robot_12/odom" />
+        <param name="base_frame_id" value="robot_12/base_link" />
+        <param name="global_frame_id" value="/map" />
+        <param name="use_map_topic" value="true" />
+        <param name="odom_model_type" value="diff" />
+
+    </node>
+    -->
+</group>
+
+<!--
+<node pkg="tf" type="static_transform_publisher" name="robot_12_map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map       /robot_12/odom 1000"/>
+-->
+<node pkg="tf" type="static_transform_publisher" name="robot_12_map_to_scan" args="0.0 0.0 0.0 0 0 0.0 /map /robot_12/base_scan 1000"/>
+<group ns="robot_13">
+    <param name="tf_prefix" value="robot_13" />
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+      <remap from="map" to="/map" />
+      <param name="controller_frequency" value="10.0" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/base_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/move_base.yaml" command="load" />
+      <param name="local_costmap/robot_base_frame" value="robot_13/base_link" />
+      <param name="global_costmap/robot_base_frame" value="robot_13/base_link" />
+      <param name="local_costmap/global_frame" value="robot_13/odom" />
+
+      <param name="base_global_planner" value="detached_planner/GlobalPlanner" />
+      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_13/base_scan" />
+      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_13/base_scan" />
+      <param name="global_costmap/observation_sources" value="robot_13/base_scan" />
+      <param name="local_costmap/observation_sources" value="robot_13/base_scan" />
+
+    </node>
+
+
+    <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false" output="screen">
+      <param name="odom_frame_id" value="robot_13/odom" />
+      <param name="base_frame_id" value="robot_13/base_link" />
+    </node>
+
+    <!--
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <remap from="scan" to="base_scan"/>
+        <param name="odom_frame_id" value="robot_13/odom" />
+        <param name="base_frame_id" value="robot_13/base_link" />
+        <param name="global_frame_id" value="/map" />
+        <param name="use_map_topic" value="true" />
+        <param name="odom_model_type" value="diff" />
+
+    </node>
+    -->
+</group>
+
+<!--
+<node pkg="tf" type="static_transform_publisher" name="robot_13_map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map       /robot_13/odom 1000"/>
+-->
+<node pkg="tf" type="static_transform_publisher" name="robot_13_map_to_scan" args="0.0 0.0 0.0 0 0 0.0 /map /robot_13/base_scan 1000"/>
+<group ns="robot_14">
+    <param name="tf_prefix" value="robot_14" />
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+      <remap from="map" to="/map" />
+      <param name="controller_frequency" value="10.0" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find multi_robot_sim)/cfg/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/base_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_sim)/cfg/move_base.yaml" command="load" />
+      <param name="local_costmap/robot_base_frame" value="robot_14/base_link" />
+      <param name="global_costmap/robot_base_frame" value="robot_14/base_link" />
+      <param name="local_costmap/global_frame" value="robot_14/odom" />
+
+      <param name="base_global_planner" value="detached_planner/GlobalPlanner" />
+      <param name="global_costmap/obstacle_layer/observation_sources" value="robot_14/base_scan" />
+      <param name="local_costmap/obstacle_layer/observation_sources" value="robot_14/base_scan" />
+      <param name="global_costmap/observation_sources" value="robot_14/base_scan" />
+      <param name="local_costmap/observation_sources" value="robot_14/base_scan" />
+
+    </node>
+
+
+    <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false" output="screen">
+      <param name="odom_frame_id" value="robot_14/odom" />
+      <param name="base_frame_id" value="robot_14/base_link" />
+    </node>
+
+    <!--
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <remap from="scan" to="base_scan"/>
+        <param name="odom_frame_id" value="robot_14/odom" />
+        <param name="base_frame_id" value="robot_14/base_link" />
+        <param name="global_frame_id" value="/map" />
+        <param name="use_map_topic" value="true" />
+        <param name="odom_model_type" value="diff" />
+
+    </node>
+    -->
+</group>
+
+<!--
+<node pkg="tf" type="static_transform_publisher" name="robot_14_map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map       /robot_14/odom 1000"/>
+-->
+<node pkg="tf" type="static_transform_publisher" name="robot_14_map_to_scan" args="0.0 0.0 0.0 0 0 0.0 /map /robot_14/base_scan 1000"/>
 <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_robot_sim)/cfg/multi_robot.rviz" />
 
 </launch>

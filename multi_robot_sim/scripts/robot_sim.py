@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import math
 import rospy
 import sys
@@ -12,7 +12,7 @@ import re
 import random
 import os
 import time
-
+from tf.transformations import euler_from_quaternion
 
 class RoboSim:
     def __init__(self):
@@ -33,19 +33,6 @@ class RoboSim:
 
         rospy.spin()
 
-    #TEMP func. Going to rewrite it
-    def quat_to_euler(self, quat):
-        q0 = quat[0]
-        q1 = quat[1]
-        q2 = quat[2]
-        q3 = quat[3]
-
-        roll = math.atan2(2*(q0*q1 + q2*q3),1 - 2*(q1*q1 + q2*q2))
-        pitch = math.asin(2*(q0*q2 - q3*q1))
-        yaw = math.atan2(2*(q0*q3 + q1*q2), 1 - 2*(q2*q2 + q3*q3))
-
-        return (roll, pitch, yaw)
-
     # Promts user for n of robots
     def ask_n(self):
 
@@ -53,6 +40,9 @@ class RoboSim:
         while True:
             try:
                 self.n_of_robots = int(input("N of robots:"))
+                if self.n_of_robots <= 0:
+                    rospy.logwarn("N of robots should be > 0")
+                    continue
                 break
             except ValueError:
                 rospy.logwarn("Enter valid integer number of robots")
@@ -64,14 +54,18 @@ class RoboSim:
     # Generate launch file given number of robots
     def generate_launch_file(self):
         begin = open(self.dir + '/src/begin_launch.txt', 'r')
-        robot = open(self.dir + '/src/robot.txt', 'r+')
+        robot = open(self.dir + '/src/robot_one_launch.txt', 'r+') if self.n_of_robots==1 else open(self.dir + '/src/robot.txt', 'r+')
         end = open(self.dir + '/src/end_launch.txt', 'r+')
         final_launch = open(self.dir[:-len('scripts')] + 'launch/robot_diff_drive_in_stage.launch', 'w')
 
         final_launch.write(begin.read())
         new = robot.read()
-        for i in range(self.n_of_robots):
-            final_launch.write(new.replace('robot_0','robot_'+str(i)))
+
+        if self.n_of_robots == 1:
+            final_launch.write(new.replace('robot_0',''))
+        else:
+            for i in range(self.n_of_robots):
+                final_launch.write(new.replace('robot_0','robot_'+str(i)))
 
         final_launch.write(end.read())
         begin.close()
@@ -86,11 +80,15 @@ class RoboSim:
 
         final_stage.write(begin.read())
 
-
-        for i in range(self.n_of_robots):
-            point = self.spawn_points[i]
-            stage_robot = 'pr2(pose [' + str(point[0]) +' ' + str(point[1]) +' 0' + ' ' + str(math.degrees(point[2][0])) + '] name "pr2_' + str(i) +'" color "red" )\n'
+        if self.n_of_robots == 1:
+            point = self.spawn_points[0]
+            stage_robot = 'pr2(pose [' + str(point[0]) +' ' + str(point[1]) +' 0' + ' ' + str(math.degrees(point[2][0])) + '] name "pr2' +'" color "red" )\n'
             final_stage.write(stage_robot)
+        else:
+            for i in range(self.n_of_robots):
+                point = self.spawn_points[i]
+                stage_robot = 'pr2(pose [' + str(point[0]) +' ' + str(point[1]) +' 0' + ' ' + str(math.degrees(point[2][0])) + '] name "pr2_' + str(i) +'" color "red" )\n'
+                final_stage.write(stage_robot)
 
         begin.close()
         final_stage.close()
@@ -103,12 +101,19 @@ class RoboSim:
 
         final_rviz = open(self.dir[:-len('scripts')] + 'cfg/multi_robot.rviz', 'w')
 
+
         final_rviz.write(begin.read())
         new = robot.read()
-        for i in range(self.n_of_robots):
-            temp = new.replace('robot_0', 'robot_'+str(i))
 
-            final_rviz.write(temp.replace('Robot 0', 'Robot ' + str(i)))
+        if self.n_of_robots == 1:
+            temp = new.replace('robot_0', '')
+            final_rviz.write(begin.read().replace('robot_0', ''))
+            final_rviz.write(temp.replace('Robot 0', ''))
+            final_rviz.write(end.read().replace('robot_0',''))
+        else:
+            for i in range(self.n_of_robots):
+                temp = new.replace('robot_0', 'robot_'+str(i))
+                final_rviz.write(temp.replace('Robot 0', 'Robot ' + str(i)))
 
         final_rviz.write(end.read())
         begin.close()
@@ -131,7 +136,9 @@ class RoboSim:
     def spawn_topic_callback(self, data):
         if self.asked:
             if self.temp_n != 0:
-                self.spawn_points.append((data.pose.pose.position.x,data.pose.pose.position.y,self.quat_to_euler((data.pose.pose.orientation.x,data.pose.pose.orientation.y,data.pose.pose.orientation.z,data.pose.pose.orientation.w))))
+                orientation_list = [data.pose.pose.orientation.x,data.pose.pose.orientation.y,data.pose.pose.orientation.z,data.pose.pose.orientation.w]
+                self.spawn_points.append((data.pose.pose.position.x,data.pose.pose.position.y,
+                                            euler_from_quaternion(orientation_list)))
 
                 self.temp_n -= 1
                 self.spawn_poses.append(data)
@@ -149,7 +156,7 @@ class RoboSim:
 
         else:
             rospy.logwarn("Enter number of robots first!")
-            print("N of robots: ")
+            print "N of robots: "
 
 if __name__=="__main__":
     sim = RoboSim()
