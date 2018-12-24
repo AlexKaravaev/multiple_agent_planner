@@ -1,3 +1,5 @@
+<node pkg="multi_robot_sim" name="goal_selector" type="goal_selector.py" output="screen" />
+
 <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_robot_sim)/cfg/multi_robot.rviz" />
 
 </launch>

@@ -49,6 +49,7 @@ class RoboSim:
 
         self.temp_n = self.n_of_robots
         rospy.loginfo("Now set initial poses of robots in rviz")
+        rospy.set_param("n_of_robots", self.n_of_robots)
         self.asked = True
 
     # Generate launch file given number of robots
