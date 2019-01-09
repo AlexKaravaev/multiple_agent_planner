@@ -55,10 +55,9 @@ window
 floorplan
 (
   name "maze"
-  bitmap "../maps/maze.png"
+  bitmap "../maps/simple_rooms.png"
   size [ 10.0 10.0 2.0 ]
   pose [  5.0  5.0 0.0 0.0 ]
 )
-pr2(pose [0.602822542191 4.91177272797 0 0.0] name "pr2_0" color "red" )
-pr2(pose [2.95180916786 4.89215803146 0 0.0] name "pr2_1" color "red" )
-pr2(pose [0.733648300171 0.58945608139 0 0.0] name "pr2_2" color "red" )
+pr2(pose [16.4343662262 13.1308822632 0 0.0] name "pr2_0" color "red" )
+pr2(pose [4.11613225937 2.40956497192 0 0.0] name "pr2_1" color "red" )

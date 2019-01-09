@@ -5,7 +5,7 @@
      <param name="base_watchdog_timeout" value="0.2"/>
   </node>
 
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find multi_robot_sim)/maps/maze.yaml" output="screen">
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find multi_robot_sim)/maps/simple_rooms.yaml" output="screen">
 	<param name="frame_id" value="map" />
   </node>
   <node pkg="multi_robot_sim" name="robosim" type="robot_sim.py" output="screen" />
